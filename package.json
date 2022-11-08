@@ -1,0 +1,25 @@
+{
+  "name": "markdown-editor",
+  "version": "1.0.0",
+  "description": "this a biguinner friendly tutoriel to learn electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "set DEBUG=true & electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmineZouh/markdown-editor.git"
+  },
+  "author": "Zouhairi Mohamed Amine",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AmineZouh/markdown-editor/issues"
+  },
+  "homepage": "https://github.com/AmineZouh/markdown-editor#readme",
+  "dependencies": {
+    "electron": "^21.2.0",
+    "electron-builder": "^23.6.0",
+    "fs": "^0.0.1-security",
+    "simplemde": "^1.11.2"
+  }
+}

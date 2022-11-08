@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./node_modules/simplemde/dist/simplemde.min.css" />
+    <script src="./node_modules/simplemde/dist/simplemde.min.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+        }
+
+        .CodeMirror {
+            flex: 1;
+        }
+    </style>
+
+    <title>Document</title>
+</head>
+
+<body ondrop="dropHandler(event)">
+    <h1>Editor</h1>
+    <textarea id="editor"></textarea>
+    <script>
+        var editor = new SimpleMDE({
+            element: document.getElementById("editor"),
+        });
+        const { ipcRenderer } = require("electron");
+        ipcRenderer.on("editor-event", (event, arg) => {
+            console.log(arg);
+            // send message back to main process
+            event.sender.send("editor-reply", `Received ${arg}`);
+            if (arg === "toggle-bold") {
+                editor.toggleBold();
+            }
+            if (arg === "save") {
+                event.sender.send("save", editor.getValue());
+            }
+        });
+        ipcRenderer.send("editor-reply", "Page Loaded");
+        ipcRenderer.on("load", (event, content) => {
+            if (content) {
+                // do something with content
+                editor.value(content);
+            }
+        });
+
+        function dropHandler(event) {
+            event.preventDefault();
+            console.log("File (s) dropped");
+            if (event.dataTransfer.items) {
+                if (event.dataTransfer.items[0].kind === "file") {
+                    var file = event.dataTransfer.items[0].getAsFile();
+                    console.log('event.dataTransfer.items[0].getAsFile() : ', file)
+                    if (file.type === "text/plain") {
+                        var reader = new FileReader();
+                        reader.onload = (e) => {
+                            // console.log(e.target.result);
+                            editor.codemirror.setValue(e.target.result);
+                        };
+                        reader.readAsText(file);
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
